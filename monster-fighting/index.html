@@ -31,12 +31,12 @@
     <section>
       {{winner}}
     </section>
-    <section class="row controls">
+    <section class="row controls" v-if="!gameStarted">
       <div class="small-12 columns">
         <button id="start-game" @click="startGame">START NEW GAME</button>
       </div>
     </section>
-    <section class="row controls">
+    <section class="row controls" v-if="gameStarted">
       <div class="small-12 columns">
         <button id="attack" @click="attack">ATTACK</button>
         <button id="special-attack" @click="specialAttack">SPECIAL ATTACK</button>
@@ -44,10 +44,10 @@
         <button id="give-up" @click="giveUp">GIVE UP</button>
       </div>
     </section>
-    <section class="row log">
+    <section class="row log" v-if="attacks.length > 0">
       <div class="small-12 columns">
         <ul>
-          <li v-for="attack in attacks" :class="{ playerTurn: attack.playerTurn, monsterTurn: attack.monsterTurn }">
+          <li v-for="attack in attacks" :class="{ 'player-turn': attack.playerTurn, 'monster-turn': attack.monsterTurn }">
             <template v-if="attack.playerTurn">
               Player {{attack.damage ? 'attacked with the damage of ' + attack.damage : 'heal with the amount of ' + attack.heal }}!
             </template>
@@ -96,7 +96,8 @@
           attacks: [],
           playerHealth: 100,
           monsterHealth: 100,
-          winner: undefined
+          winner: undefined,
+          gameStarted: false
         }
       },
       computed: {
@@ -125,6 +126,9 @@
       },
       methods: {
         startGame() {
+          this.gameStarted = true
+        },
+        resetGame() {
           this.playerHealth = 100;
           this.monsterHealth = 100;
           this.attacks = []
@@ -171,10 +175,10 @@
         },
         giveUp() {
           if (confirm('Are you sure?')) {
-            this.playerHealth = 0
+            this.winner = 'Monster has won!!'
 
             setTimeout(() => {
-              this.startGame();
+              this.resetGame();
             }, 3000);
           }
         }
