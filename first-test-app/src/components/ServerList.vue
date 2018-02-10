@@ -1,7 +1,7 @@
 <template>
   <div class="col-xs-12 col-sm-6">
     <ul class="list-group">
-      <li class="list-group-item" v-for="server in servers" :key="server.id">
+      <li class="list-group-item" v-for="server in servers" :key="server.id" @click="selectServerForDetails(server)" @mouseover="selectServerForDetails(server)">
         <app-server-list-item :server="server"></app-server-list-item>
       </li>
     </ul>
@@ -15,6 +15,11 @@ export default {
   props: ['servers'],
   components: {
     'app-server-list-item': ServerListItem
+  },
+  methods: {
+    selectServerForDetails(server) {
+      this.$emit('serverSelected', server)
+    }
   }
 }
 </script>

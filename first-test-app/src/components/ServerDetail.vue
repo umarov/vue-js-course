@@ -1,7 +1,9 @@
 <template>
   <div>
     <template v-if="server">
-      Details for Server {{server.id}}
+      <h1>{{server.id}}</h1>
+      <p>{{server.status}}</p>
+
     </template>
 
     <template v-else>
