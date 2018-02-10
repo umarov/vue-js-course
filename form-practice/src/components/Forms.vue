@@ -51,7 +51,7 @@
     data() {
       return {
         user: {
-          fullName: '',
+          fullName: 'Muzafar Umarov',
           email: '',
           password: '',
           storeData: false,
