@@ -36,6 +36,8 @@
 
 <script lang="ts">
   import Vue from 'vue';
+  import { mapGetters } from 'vuex';
+
   import DropDown from '@/components/DropDown.vue';
 
   export default Vue.extend({
@@ -43,9 +45,13 @@
     components: {
       StDropDown: DropDown,
     },
+    computed: {
+      ...mapGetters({
+        funds: 'getFunds',
+      }),
+    },
     data() {
       return {
-        funds: 0,
         showNavBar: false,
       };
     },
