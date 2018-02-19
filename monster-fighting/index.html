@@ -1,190 +1,190 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <title>Monster Slayer</title>
-  <script src="https://npmcdn.com/vue/dist/vue.js"></script>
-  <link rel="stylesheet" href="css/foundation.min.css">
-  <link rel="stylesheet" href="css/app.css">
-</head>
+  <head>
+    <title>Monster Slayer</title>
+    <script src="https://npmcdn.com/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="css/foundation.min.css">
+    <link rel="stylesheet" href="css/app.css">
+  </head>
 
-<body>
-  <div id="app">
-    <section class="row">
-      <div class="small-6 columns">
-        <h1 class="text-center">YOU</h1>
-        <div class="healthbar">
-          <div class="healthbar healthbar-value text-center" :style="playerBar">
-            {{playerHealth}}
+  <body>
+    <div id="app">
+      <section class="row">
+        <div class="small-6 columns">
+          <h1 class="text-center">YOU</h1>
+          <div class="healthbar">
+            <div class="healthbar healthbar-value text-center" :style="playerBar">
+              {{playerHealth}}
+            </div>
           </div>
         </div>
-      </div>
-      <div class="small-6 columns">
-        <h1 class="text-center">MONSTER</h1>
-        <div class="healthbar">
-          <div class="healthbar healthbar-value text-center" :style="monsterBar">
-            {{monsterHealth}}
+        <div class="small-6 columns">
+          <h1 class="text-center">MONSTER</h1>
+          <div class="healthbar">
+            <div class="healthbar healthbar-value text-center" :style="monsterBar">
+              {{monsterHealth}}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-    <section>
-      {{winner}}
-    </section>
-    <section class="row controls" v-if="!gameStarted">
-      <div class="small-12 columns">
-        <button id="start-game" @click="startGame">START NEW GAME</button>
-      </div>
-    </section>
-    <section class="row controls" v-if="gameStarted">
-      <div class="small-12 columns">
-        <button id="attack" @click="attack">ATTACK</button>
-        <button id="special-attack" @click="specialAttack">SPECIAL ATTACK</button>
-        <button id="heal" @click="heal">HEAL</button>
-        <button id="give-up" @click="giveUp">GIVE UP</button>
-      </div>
-    </section>
-    <section class="row log" v-if="attacks.length > 0">
-      <div class="small-12 columns">
-        <ul>
-          <li v-for="attack in attacks" :class="{ 'player-turn': attack.playerTurn, 'monster-turn': attack.monsterTurn }">
-            <template v-if="attack.playerTurn">
-              Player {{attack.damage ? 'attacked with the damage of ' + attack.damage : 'heal with the amount of ' + attack.heal }}!
-            </template>
+      </section>
+      <section>
+        {{winner}}
+      </section>
+      <section class="row controls" v-if="!gameStarted">
+        <div class="small-12 columns">
+          <button id="start-game" @click="startGame">START NEW GAME</button>
+        </div>
+      </section>
+      <section class="row controls" v-if="gameStarted">
+        <div class="small-12 columns">
+          <button id="attack" @click="attack">ATTACK</button>
+          <button id="special-attack" @click="specialAttack">SPECIAL ATTACK</button>
+          <button id="heal" @click="heal">HEAL</button>
+          <button id="give-up" @click="giveUp">GIVE UP</button>
+        </div>
+      </section>
+      <section class="row log" v-if="attacks.length > 0">
+        <div class="small-12 columns">
+          <ul>
+            <li v-for="attack in attacks" :class="{ 'player-turn': attack.playerTurn, 'monster-turn': attack.monsterTurn }">
+              <template v-if="attack.playerTurn">
+                Player {{attack.damage ? 'attacked with the damage of ' + attack.damage : 'heal with the amount of ' + attack.heal }}!
+              </template>
 
-            <template v-else="attack.monsterTurn">
-              Monster attacked with the damage of {{attack.damage}}!
-            </template>
-          </li>
-        </ul>
-      </div>
-    </section>
-  </div>
+              <template v-else="attack.monsterTurn">
+                Monster attacked with the damage of {{attack.damage}}!
+              </template>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </div>
 
-  <script>
-    class Attack {
-      static determineNormalAttackDamage() {
-        return Math.max(1, Math.floor(Math.random() * 10))
-      }
-
-      static determineSpecialAttackDamage() {
-        return Math.max(10, Math.floor(Math.random() * 10 + 10))
-      }
-
-      playerHeal(heal) {
-        this.playerTurn = true
-        this.monsterTurn = false
-        this.heal = heal
-      }
-
-      playerAttack(damage) {
-        this.playerTurn = true
-        this.monsterTurn = false
-        this.damage = damage
-      }
-
-      monsterAttack(damage) {
-        this.playerTurn = false
-        this.monsterTurn = true
-        this.damage = damage
-      }
-    }
-    new Vue({
-      el: '#app',
-      data() {
-        return {
-          attacks: [],
-          playerHealth: 100,
-          monsterHealth: 100,
-          winner: undefined,
-          gameStarted: false
+    <script>
+      class Attack {
+        static determineNormalAttackDamage() {
+          return Math.max(1, Math.floor(Math.random() * 10))
         }
-      },
-      computed: {
-        playerBar() {
+
+        static determineSpecialAttackDamage() {
+          return Math.max(10, Math.floor(Math.random() * 10 + 10))
+        }
+
+        playerHeal(heal) {
+          this.playerTurn = true
+          this.monsterTurn = false
+          this.heal = heal
+        }
+
+        playerAttack(damage) {
+          this.playerTurn = true
+          this.monsterTurn = false
+          this.damage = damage
+        }
+
+        monsterAttack(damage) {
+          this.playerTurn = false
+          this.monsterTurn = true
+          this.damage = damage
+        }
+      }
+      new Vue({
+        el: '#app',
+        data() {
           return {
-            width: `${this.playerHealth}%`
+            attacks: [],
+            playerHealth: 100,
+            monsterHealth: 100,
+            winner: undefined,
+            gameStarted: false
           }
         },
-        monsterBar() {
-          return {
-            width: `${this.monsterHealth}%`
+        computed: {
+          playerBar() {
+            return {
+              width: `${this.playerHealth}%`
+            }
+          },
+          monsterBar() {
+            return {
+              width: `${this.monsterHealth}%`
+            }
+          }
+        },
+        watch: {
+          playerHealth(value) {
+            if (value <= 0) {
+              this.winner = 'Monster has won!!!'
+            }
+          },
+          monsterHealth(value) {
+            if (value <= 0) {
+              this.winner = 'Player has won!!!'
+            }
+          }
+        },
+        methods: {
+          startGame() {
+            this.gameStarted = true
+          },
+          resetGame() {
+            this.playerHealth = 100;
+            this.monsterHealth = 100;
+            this.attacks = []
+            this.winner = undefined
+          },
+          attack() {
+            if (!this.winner) {
+              const monsterAttack = new Attack();
+              const playerAttack = new Attack();
+
+              playerAttack.playerAttack(Attack.determineNormalAttackDamage())
+              this.monsterHealth -= playerAttack.damage
+              monsterAttack.monsterAttack(Attack.determineNormalAttackDamage())
+              this.playerHealth -= monsterAttack.damage
+
+              this.attacks.push(playerAttack, monsterAttack)
+            }
+          },
+          specialAttack() {
+            if (!this.winner) {
+              const monsterAttack = new Attack();
+              const playerAttack = new Attack();
+
+              playerAttack.playerAttack(Attack.determineSpecialAttackDamage())
+              this.monsterHealth -= playerAttack.damage
+              monsterAttack.monsterAttack(Attack.determineNormalAttackDamage())
+              this.playerHealth -= monsterAttack.damage
+
+              this.attacks.push(playerAttack, monsterAttack)
+            }
+          },
+          heal() {
+            if (!this.winner) {
+              const monsterAttack = new Attack();
+              const playerAttack = new Attack();
+
+              playerAttack.playerHeal(Attack.determineNormalAttackDamage())
+              this.playerHealth += playerAttack.heal
+              monsterAttack.monsterAttack(Attack.determineNormalAttackDamage())
+              this.playerHealth -= monsterAttack.damage
+
+              this.attacks.push(playerAttack, monsterAttack)
+            }
+          },
+          giveUp() {
+            if (confirm('Are you sure?')) {
+              this.winner = 'Monster has won!!'
+
+              setTimeout(() => {
+                this.resetGame();
+              }, 3000);
+            }
           }
         }
-      },
-      watch: {
-        playerHealth(value) {
-          if (value <= 0) {
-            this.winner = 'Monster has won!!!'
-          }
-        },
-        monsterHealth(value) {
-          if (value <= 0) {
-            this.winner = 'Player has won!!!'
-          }
-        }
-      },
-      methods: {
-        startGame() {
-          this.gameStarted = true
-        },
-        resetGame() {
-          this.playerHealth = 100;
-          this.monsterHealth = 100;
-          this.attacks = []
-          this.winner = undefined
-        },
-        attack() {
-          if (!this.winner) {
-            const monsterAttack = new Attack();
-            const playerAttack = new Attack();
-
-            playerAttack.playerAttack(Attack.determineNormalAttackDamage())
-            this.monsterHealth -= playerAttack.damage
-            monsterAttack.monsterAttack(Attack.determineNormalAttackDamage())
-            this.playerHealth -= monsterAttack.damage
-
-            this.attacks.push(playerAttack, monsterAttack)
-          }
-        },
-        specialAttack() {
-          if (!this.winner) {
-            const monsterAttack = new Attack();
-            const playerAttack = new Attack();
-
-            playerAttack.playerAttack(Attack.determineSpecialAttackDamage())
-            this.monsterHealth -= playerAttack.damage
-            monsterAttack.monsterAttack(Attack.determineNormalAttackDamage())
-            this.playerHealth -= monsterAttack.damage
-
-            this.attacks.push(playerAttack, monsterAttack)
-          }
-        },
-        heal() {
-          if (!this.winner) {
-            const monsterAttack = new Attack();
-            const playerAttack = new Attack();
-
-            playerAttack.playerHeal(Attack.determineNormalAttackDamage())
-            this.playerHealth += playerAttack.heal
-            monsterAttack.monsterAttack(Attack.determineNormalAttackDamage())
-            this.playerHealth -= monsterAttack.damage
-
-            this.attacks.push(playerAttack, monsterAttack)
-          }
-        },
-        giveUp() {
-          if (confirm('Are you sure?')) {
-            this.winner = 'Monster has won!!'
-
-            setTimeout(() => {
-              this.resetGame();
-            }, 3000);
-          }
-        }
-      }
-    })
-  </script>
-</body>
+      })
+    </script>
+  </body>
 
 </html>
