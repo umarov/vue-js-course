@@ -2,7 +2,9 @@
   <div id="app" @click="hideDropDown = true">
     <st-nav-bar :hideDropDown="hideDropDown" @click.native.stop="hideDropDown = false"></st-nav-bar>
     <div id="nav container">
-      <router-view/>
+      <transition mode="out-in" :duration="100" enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp">
+        <router-view/>
+      </transition>
     </div>
   </div>
 </template>

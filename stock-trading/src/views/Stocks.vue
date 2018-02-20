@@ -1,7 +1,7 @@
 <template>
   <div class="container row">
     <div class="col-sm-6 col-md-4 col-lg-4 col-xl-3" v-for="stock in stocks" :key="stock.sign">
-      <st-stock :stock="stock"></st-stock>
+      <st-stock :stock="stock" :funds="funds" buyable></st-stock>
     </div>
   </div>
 </template>
@@ -19,14 +19,13 @@
     computed: {
       ...mapGetters({
         stocks: 'getAllStocks',
+        funds: 'getFunds',
       }),
     },
   });
 </script>
 
 <style lang="scss" scoped>
-  .card {
-    margin: 8px;
-  }
+
 </style>
 

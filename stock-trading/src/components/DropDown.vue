@@ -39,8 +39,8 @@
 </script>
 
 <style lang="scss" scoped>
-  .dropdown-items.dropdown-menu.show {
-    transform: translate3d(-130px, 0px, 0px);
-  }
+  // .dropdown-items.dropdown-menu.show {
+  //   transform: translate3d(-100px, 0px, 0px);
+  // }
 </style>
 
