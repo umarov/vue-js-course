@@ -18,13 +18,12 @@
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item" @click.stop="showNavBar = false">
-          <a class="nav-link" href="#">End Day</a>
+          <a class="nav-link" @click="endDay">End Day</a>
         </li>
         <st-drop-down drop-down-name="Save & Load" :hide-drop-down="hideDropDown">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" @click="saveDataToServer">Save Data</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a class="dropdown-item" @click="loadServerData">Load Data</a>
         </st-drop-down>
         <span class="navbar-text font-weight-bold">
           Funds: {{funds | currency}}
@@ -36,7 +35,7 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import { mapGetters } from 'vuex';
+  import { mapGetters, mapActions } from 'vuex';
 
   import DropDown from '@/components/DropDown.vue';
 
@@ -54,6 +53,16 @@
       return {
         showNavBar: false,
       };
+    },
+    methods: {
+      ...mapActions(['endDay', 'saveDataToServer']),
+      async loadServerData() {
+        try {
+          await this.$store.dispatch('loadServerData');
+        } catch (err) {
+          console.log(err);
+        }
+      },
     },
   });
 </script>

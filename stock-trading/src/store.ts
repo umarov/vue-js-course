@@ -3,6 +3,8 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
+const backendUrl = 'https://somebackend.firebaseio.com/stockTrading';
+
 interface Stock {
   name: string;
   sign: string;
@@ -22,6 +24,7 @@ interface StockTradingState {
   funds: number;
   stocks: Stock[];
   ownedStocks: Stock[];
+  stateKey?: string;
 }
 
 export default new Vuex.Store({
@@ -69,6 +72,18 @@ export default new Vuex.Store({
     increaseFunds(state, amount) {
       state.funds += amount;
     },
+    updateStockPrice(state, stock) {
+      state.stocks[state.stocks.indexOf(stock)] = stockWithNewPrice(stock);
+    },
+    setStateKey(state, key) {
+      state.stateKey = key;
+    },
+    replaceState(state, newState) {
+      state.funds = 0;
+      state.ownedStocks = [];
+      state.stocks = [];
+      Object.assign(state, newState);
+    },
   },
   actions: {
     buyShares({ commit, state }, { quantity, sign }) {
@@ -95,5 +110,56 @@ export default new Vuex.Store({
         commit('increaseFunds', stockToSell.price * quantity);
       }
     },
+    endDay({ commit, state }) {
+      state.stocks.forEach(stock => {
+        commit('updateStockPrice', stock);
+      });
+    },
+    async saveDataToServer({ commit, state }) {
+      const data = {
+        state,
+      };
+
+      const response = await fetch(`${backendUrl}.json`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: new Headers({
+          'Content-Type': 'application/json',
+        }),
+      });
+
+      const { name } = await response.json();
+
+      commit('setStateKey', name);
+    },
+    async loadServerData({ commit, state }) {
+      if (state.stateKey) {
+        const response = await fetch(`${backendUrl}/${state.stateKey}.json`, {
+          headers: new Headers({
+            'Content-Type': 'application/json',
+          }),
+        });
+
+        const newState = await response.json();
+
+        commit('replaceState', newState.state);
+      } else {
+        throw new Error('Server key is not available');
+      }
+    },
   },
 });
+
+function stockWithNewPrice(stock: Stock) {
+  const percentage =
+    (Math.floor(Math.random() * 5) +
+      Math.floor(Math.random() * -2) +
+      Math.floor(Math.random() * 5) +
+      (Math.floor(Math.random() * -5) +
+        Math.floor(Math.random() * 7) +
+        Math.floor(Math.random() * -5))) /
+    100;
+
+  stock.price = stock.price + Math.ceil(stock.price * percentage);
+  return stock;
+}
