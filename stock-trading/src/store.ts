@@ -1,86 +1,48 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import portfolio from './store/modules/portfolio';
 
 Vue.use(Vuex);
 
 const backendUrl = 'https://somebackend.firebaseio.com/stockTrading';
 
-interface Stock {
+export interface Stock {
   name: string;
   sign: string;
   price: number;
   description: string;
-}
-
-interface OwnedStock {
-  name: string;
-  sign: string;
-  price: number;
-  description: string;
-  quantity: number;
 }
 
 interface StockTradingState {
-  funds: number;
   stocks: Stock[];
-  ownedStocks: Stock[];
   stateKey?: string;
 }
 
 export default new Vuex.Store({
+  modules: {
+    portfolio,
+  },
   state: {
-    funds: 10000,
     stocks: [
       { name: 'Google', sign: 'GOOG', price: 1034, description: '' },
       { name: 'Square', sign: 'SQ', price: 44, description: '' },
       { name: 'AMD', sign: 'AMD', price: 12, description: '' },
       { name: 'NVidia', sign: 'NVDA', price: 244, description: '' },
     ],
-    ownedStocks: [],
   } as StockTradingState,
   getters: {
     getAllStocks(state) {
       return state.stocks;
     },
-    getOwnedStocks(state) {
-      return state.ownedStocks.reduce((stocks: any, stock: Stock) => {
-        const { sign } = stock;
-        if (stocks[sign]) {
-          return {
-            ...stocks,
-            ...{ [sign]: { quantity: stocks[sign].quantity + 1, ...stock } },
-          };
-        } else {
-          return { ...stocks, ...{ [sign]: { quantity: 1, ...stock } } };
-        }
-      }, {});
-    },
-    getFunds(state) {
-      return state.funds;
-    },
   },
   mutations: {
-    addShares(state: StockTradingState, shares: Stock[]) {
-      state.ownedStocks = [...shares, ...state.ownedStocks];
-    },
-    removeShare(state: StockTradingState, indexToRemove: number) {
-      state.ownedStocks = state.ownedStocks.filter((_, index) => index !== indexToRemove);
-    },
-    reduceFunds(state, amount) {
-      state.funds -= amount;
-    },
-    increaseFunds(state, amount) {
-      state.funds += amount;
-    },
     updateStockPrice(state, stock) {
       state.stocks[state.stocks.indexOf(stock)] = stockWithNewPrice(stock);
     },
-    setStateKey(state, key) {
-      state.stateKey = key;
+    setStateKey({ stateKey }, key) {
+      stateKey = key;
     },
     replaceState(state, newState) {
-      state.funds = 0;
-      state.ownedStocks = [];
       state.stocks = [];
       Object.assign(state, newState);
     },
