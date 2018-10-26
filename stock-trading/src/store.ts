@@ -56,8 +56,8 @@ export default new Vuex.Store({
         for (let i = 0; i < quantity; i++) {
           shares.push(stockToBuy);
         }
-        commit('addShares', shares);
-        commit('reduceFunds', stockToBuy.price * quantity);
+        commit('portfolio/addShares', shares);
+        commit('portfolio/reduceFunds', stockToBuy.price * quantity);
       }
     },
     sellShares({ commit, state }, { quantity, sign }) {
@@ -66,7 +66,7 @@ export default new Vuex.Store({
       if (stockToSell) {
         for (let i = 0; i < quantity; i++) {
           const indexToRemove = state.ownedStocks.indexOf(stockToSell);
-          commit('removeShare', indexToRemove);
+          commit('portfolio/removeShare', indexToRemove);
         }
 
         commit('increaseFunds', stockToSell.price * quantity);

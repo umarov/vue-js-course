@@ -3,7 +3,6 @@ import { Stock } from '../../store';
 interface PortfolioState {
   ownedStocks: Stock[];
   funds: number;
-  stateKey?: string;
 }
 
 interface OwnedStock {
@@ -53,9 +52,6 @@ const mutations = {
   },
   increaseFunds({ funds }, amount) {
     funds += amount;
-  },
-  setStateKey({ stateKey }, key) {
-    stateKey = key;
   },
   resetState(currentState, newState) {
     currentState.funds = 0;
